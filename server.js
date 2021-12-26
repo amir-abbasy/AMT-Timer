@@ -5,7 +5,7 @@ var axios = require("axios");
 var cors = require('cors');
 app.use(cors());
 
-var port =  process.env.port || 4000
+var port =  process.env.PORT || 4000
 
 users = [];
 
