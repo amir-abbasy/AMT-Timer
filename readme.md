@@ -1,13 +1,14 @@
 
 
 # Deskbug.md
+https://deskbug.herokuapp.com/
 
 ![](https://www.whatsappprofiledpimages.com/wp-content/uploads/2019/08/funny-profile-Images-for-Whatsapp-2-300x168.jpg)
 
 ![](https://img.shields.io/github/release/pandao/editor.md.svg)
 
 
-`npm i express socket-io`
+`npm i express cors axios socket-io`
 
 Contributors
 
