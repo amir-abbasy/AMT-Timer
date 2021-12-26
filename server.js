@@ -1,8 +1,11 @@
 var app = require("express")();
 var http = require("http").Server(app);
 var io = require("socket.io")(http);
+var axios = require("axios");
+var cors = require('cors');
+app.use(cors());
 
-var port =  process.env.PORT || 4000;
+var port =  process.env.port || 4000
 
 users = [];
 
@@ -14,6 +17,22 @@ app.get("/", function (req, res) {
 app.get("/reset", function (req, res) {
    users = []
    res.send("OK!")
+ });
+
+app.get("/news", async function (req, res) {
+
+  const BASE_URL = 'https://newsapi.org/v2/everything?q=technology&apiKey=dee32b64c5754a819b8fb36a8c1c52bf';
+   try {
+    const response = await axios.get(`${BASE_URL}`);
+    const todoItems = response.data;
+    console.log(`GET: NEWS`, todoItems);
+    const jsonContent = JSON.stringify(todoItems);
+    res.end(jsonContent);
+    // return todoItems;
+  } catch (errors) {
+    console.error(errors);
+  }
+
  });
 
 io.on("connection", function (socket) {
