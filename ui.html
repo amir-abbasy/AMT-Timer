@@ -523,21 +523,36 @@
                 </p>
               </div>
             </div>
-
-            <div class="timeBox">
-              <p class="sub title">Exit Time:</p>
-              <p
-                class="title"
-                id="time_out"
-                style="
-                  background: -webkit-linear-gradient(45deg, #48d11e, #55efc4);
-                  -webkit-background-clip: text;
-                  -webkit-text-fill-color: transparent;
-                "
-              >
-                00.00
-              </p>
+            <div>
+              <div class="timeBox">
+                <p class="sub title" style="font-size: 20px">Arrival:</p>
+                <p
+                  class="title"
+                  id="time_arrival"
+                  style="
+                   
+                    font-size: 35px;
+                  "
+                >
+                  00.00
+                </p>
+              </div>
+              <div class="timeBox">
+                <p class="sub title">Exit:</p>
+                <p
+                  class="title"
+                  id="time_out"
+                  style="
+                    background: -webkit-linear-gradient(45deg, #48d11e, #55efc4);
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                  "
+                >
+                  00.00
+                </p>
+              </div>
             </div>
+       
           </div>
         </div>
 
@@ -693,7 +708,6 @@
       });
 
       // AMT TIMING
-
       var textArea = document.getElementById("textArea");
       var times_ = [];
       var totalTimeOpt2 = null;
@@ -712,147 +726,114 @@
         totalTimeOpt2 = document.getElementById("totalTimeInput").value;
       }
 
-      // calcTime -----------------------------
-      const calcTime = (t1, t2, action = "+", is24 = false) => {
-        // calcTime('7:05:00', '00:52:00');
-        // calcTime('7:05:00', '00:52:00', '-');
-        // calcTime('19:05:00', '01:52:00', '-', true);
+     
 
-        var tm = t1.split(":");
-        var tm_ = t2.split(":");
-
-        let h;
-        let m;
-        let s;
-
-        if (action == "+") {
-          h = parseFloat(tm[0]) + parseFloat(tm_[0]);
-          m = parseFloat(tm[1]) + parseFloat(tm_[1]);
-          s = parseFloat(tm[2]) + parseFloat(tm_[2]);
-
-          if (s >= 60) {
-            s -= 60;
-            m += 1;
-            if (s == 60) {
-              m += 1;
-              s = 0;
-            }
-          }
-
-          if (m >= 60) {
-            m -= 60;
-            h += 1;
-            if (m == 60) {
-              h += 1;
-              m = 0;
-            }
-          }
-        } else {
-          h = parseFloat(tm[0]) - parseFloat(tm_[0]);
-          m = parseFloat(tm[1]) - parseFloat(tm_[1]);
-          s = parseFloat(tm[2]) - parseFloat(tm_[2]);
-
-          if (s <= 0) {
-            s = 60 - Math.abs(s);
-            m -= 1;
-            if (s == 60) {
-              m += 1;
-              s = 0;
-            }
-          }
-
-          if (m <= 0) {
-            m = 60 - Math.abs(m);
-            h -= 1;
-            if (m == 60) {
-              h += 1;
-              m = 0;
-            }
-          }
-        }
-        if (is24) {
-          if (h > 24) {
-            h -= 24;
-          } else if (h > 12) {
-            h -= 12;
-          }
-        }
-        const time = `${
-          Math.abs(h).toString().length == 2 ? Math.abs(h) : "0" + Math.abs(h)
-        }:${
-          Math.abs(m).toString().length == 2 ? Math.abs(m) : "0" + Math.abs(m)
-        }:${
-          Math.abs(s).toString().length == 2 ? Math.abs(s) : "0" + Math.abs(s)
-        }`;
-
-        return time;
-      };
-
-      setInterval(() => {
-        if (times_.length > 0) {
-          var times = [
-            ...times_,
-            [
-              times_[times_.length - 1][1],
-              new Date().toLocaleTimeString("en-GB"),
-            ],
-          ];
-          console.log("--", times);
-          // console.log("NOW", new Date().toLocaleTimeString('en-GB'));
-
-          var total = "00:00:00";
-
-          times.map((item, k) => {
-            let extractTime = calcTime(item[1], item[0], "-");
-            console.log("working--", item[1], item[0], extractTime);
-            total = calcTime(total, extractTime);
-          });
-          // total time
-          document.getElementById("time").innerHTML = total;
-          // remaining time
-          var time_remaining = (document.getElementById(
-            "time_remaining"
-          ).innerHTML = calcTime("08:00:00", total, "-"));
-          // exit time
-          document.getElementById("time_out").innerHTML = calcTime(
+    setInterval(function () {
+      var millisecond; 
+      if (times_.length != 0) {
+        var times = [
+          ...times_,
+          [
+            times_[times_.length - 1][1],
             new Date().toLocaleTimeString("en-GB"),
-            time_remaining,
-            undefined,
-            true
-          );
-          // finish
-          if (parseFloat(total) >= 8) {
-            // document.getElementById("divTimes").innerHTML = `
-            // <p>RUN</p>
-            // `;
-            document.getElementById("time_out").innerHTML = "| RUN |";
-            document.getElementById("time_remaining").innerHTML = "00:00:00";
-          }
-        } else if (totalTimeOpt2) {
-          totalTimeOpt2 = calcTime(totalTimeOpt2, "00:00:01"); // update total time
+          ],
+        ];
+        millisecond =  calculateTimeInMillisecond(times);
+      }else{
+        millisecond =   calculateHourInMillisecond(totalTimeOpt2);
+      }
+        // var millisecond = calculateTimeInMillisecond(times_);
 
-          // total time
-          document.getElementById("time").innerHTML = totalTimeOpt2;
-          // remaining time
-          var time_remaining = (document.getElementById(
-            "time_remaining"
-          ).innerHTML = calcTime("08:00:00", totalTimeOpt2, "-"));
-          // exit time
-          document.getElementById("time_out").innerHTML = calcTime(
-            new Date().toLocaleTimeString("en-GB"),
-            time_remaining,
-            undefined,
-            true
-          );
-          // finished
-          if (parseFloat(totalTimeOpt2) >= 8) {
-            document.getElementById("time_out").innerHTML = "| RUN |";
-            document.getElementById("time_remaining").innerHTML = "00:00:00";
-          }
+        document.getElementById('time').innerHTML = calculateTime(millisecond[0]);
+
+        // 28800000 = 8 hours
+        // 14400000 = 4 hours
+        var remaining = document.getElementById('time_remaining').innerHTML = calculateTime((28800000 - millisecond[0]));
+
+        document.getElementById('time_arrival').innerHTML = millisecond[1].slice(0, 8);
+
+        if (remaining != '00:00:00') {
+          document.getElementById('time_out').innerHTML = tConvert(calculateTimeFinal(new Date().toLocaleTimeString(), remaining));
         } else {
-          // console.log("Enter Times");
+          document.getElementById("time_out").innerHTML = "| RUN |";
+          document.getElementById("time_remaining").innerHTML = "00:00:00";
         }
-      }, 1000);
+    }, 1000);
+
+
+    function tConvert(time) {
+      // Check correct time format and split into components
+      time = time.toString().match(/^([01]\d|2[0-3])(:)([0-5]\d)(:[0-5]\d)?$/) || [time];
+
+      if (time.length > 1) { // If time format correct
+        time = time.slice(1);  // Remove full string match value
+        time[5] = +time[0] < 12 ? ' am' : ' pm'; // Set AM/PM
+        time[0] = +time[0] % 12 || 12; // Adjust hours
+      }
+      return time.join(''); // return adjusted time or original string
+    }
+
+
+
+    function calculateTimeInMillisecond(times) {
+      var millisecond_diff = 0;
+      var arrival = null;
+      times.forEach(element => {
+        var today = new Date();
+        if (arrival == null) {
+          arrival = element[0];
+        }
+        var date_string = today.toLocaleDateString();
+        var date_split = date_string.split('/');
+        var time_split1 = element[0].split(':');
+        var time_split2 = element[1].split(':');
+        if (time_split1 > "13,00,00" && time_split1 < "13,45,00") {
+          if (time_split2 > "13,00,00" && time_split2 < "13,45,00") {
+            return;
+          }
+          var date1 = date_split[2] + '-' + date_split[1] + '-' + date_split[0] + 'T' + '13' + ':' + '45' + ':' + '00';
+        } else {
+          var date1 = date_split[2] + '-' + date_split[1] + '-' + date_split[0] + 'T' + time_split1[0] + ':' + time_split1[1] + ':' + time_split1[2];
+        }
+        var date2 = date_split[2] + '-' + date_split[1] + '-' + date_split[0] + 'T' + time_split2[0] + ':' + time_split2[1] + ':' + time_split2[2];
+
+        var millisecond1 = new Date(date1).getTime();
+        var millisecond2 = new Date(date2).getTime();
+        millisecond_diff += millisecond2 - millisecond1;
+
+      });
+
+
+      return [millisecond_diff,arrival];
+    }
+
+    function calculateHourInMillisecond(totalHour){
+      var houres = totalHour;
+      var totalHour = houres.split(':');
+      var total_milliSec = (parseInt(totalHour[0]) * 60 * 60 + parseInt(totalHour[1]) * 60 + parseInt(totalHour[2])) * 1000;
+      console.log('total_milliSec', total_milliSec);
+      return [total_milliSec, undefined];
+    }
+   
+
+    function calculateTime(millisecond) {
+      return ('0' + (parseInt((millisecond / (1000 * 60 * 60)) % 24))).slice(-2) + ':' + ('0' + (parseInt((millisecond / (1000 * 60)) % 60))).slice(-2) + ':' + ('0' + (parseInt((millisecond / 1000) % 60))).slice(-2);
+    }
+    function calculateTimeFinal(current, remaining) {
+      current = current.split(/\D/);
+      remaining = remaining.split(/\D/);
+      var seconds1 = parseInt(current[0]) * 60 * 60 + parseInt(current[1]) * 60 + parseInt(current[2]);
+      var seconds2 = parseInt(remaining[0]) * 60 * 60 + parseInt(remaining[1]) * 60 + parseInt(remaining[2]);
+      if (new Date().toLocaleTimeString() < '13:45:00')
+        seconds2 += 2700;
+      var s = seconds1 + seconds2;
+      var m = Math.floor(s / 60); s = s % 60;
+      var h = Math.floor(m / 60); m = m % 60;
+      var d = Math.floor(h / 24); h = h % 24;
+
+      return ('0' + (parseInt(h))).slice(-2) + ':' + ('0' + (parseInt(m))).slice(-2) + ':' + ('0' + (parseInt(s))).slice(-2);
+    }
+
 
       // Return pmt times
       function pmtTimeGen(times) {
