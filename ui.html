@@ -1,514 +1,510 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Deskbug</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@200;400;900&family=Rubik:wght@800&display=swap"
-      rel="stylesheet"
-    />
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
-    <script>
-      var socket = io();
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Deskbug</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@200;400;900&family=Rubik:wght@800&display=swap"
+    rel="stylesheet" />
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
-      function setUsername() {
-        var inputVal = document.getElementById("message");
-        // console.log("inputVal",inputVal.value);
-        if (inputVal.value) {
-          socket.emit("setUsername", inputVal.value);
-        } else {
-          alert("Enter Nickname!");
-        }
+  <script>
+    var socket = io();
+
+    function setUsername() {
+      var inputVal = document.getElementById("message");
+      // console.log("inputVal",inputVal.value);
+      if (inputVal.value) {
+        socket.emit("setUsername", inputVal.value);
+      } else {
+        alert("Enter Nickname!");
       }
+    }
 
-      var user;
+    var user;
 
-      socket.on("userExists", function (data) {
-        document.getElementById("error-container").innerHTML = data;
-      });
+    socket.on("userExists", function (data) {
+      document.getElementById("error-container").innerHTML = data;
+    });
 
-      socket.on("userSet", function (data) {
-        user = data.username;
-        var sendButton = document.getElementById("sendButton");
-        sendButton.setAttribute("onclick", "sendMessage()");
-        sendButton.innerHTML = "SEND";
-        document
-          .getElementById("message")
-          .setAttribute("placeholder", "Message...");
-        // document.getElementById(
-        //   "chatbox"
-        // ).innerHTML = `<input type="text" id="message" placeholder="Message..." />
-        // <button id="toggleEmojies" onclick="toggleEmojiContainer()">😃</button>
-        //   <button type="button"  name="button" onclick="sendMessage()" class="button">SEND</button>`;
+    socket.on("userSet", function (data) {
+      user = data.username;
+      var sendButton = document.getElementById("sendButton");
+      sendButton.setAttribute("onclick", "sendMessage()");
+      sendButton.innerHTML = "SEND";
+      document
+        .getElementById("message")
+        .setAttribute("placeholder", "Message...");
+      // document.getElementById(
+      //   "chatbox"
+      // ).innerHTML = `<input type="text" id="message" placeholder="Message..." />
+      // <button id="toggleEmojies" onclick="toggleEmojiContainer()">😃</button>
+      //   <button type="button"  name="button" onclick="sendMessage()" class="button">SEND</button>`;
 
-        document.getElementById("message").value = "";
-        //  remove err
-        document.getElementById("error-container").innerHTML = ``;
-      });
+      document.getElementById("message").value = "";
+      //  remove err
+      document.getElementById("error-container").innerHTML = ``;
+    });
 
-      function sendMessage(withEmoji = false) {
-        var msg = document.getElementById("message").value;
-        if (msg) {
-          socket.emit("msg", {
-            message: msg,
-            user: user,
-            withEmoji: withEmoji,
-          });
-        }
-        document.getElementById("message").value = "";
-
-        var messageContainer = document.getElementById("message-container");
-        messageContainer.scrollTop = messageContainer.scrollHeight;
+    function sendMessage(withEmoji = false) {
+      var msg = document.getElementById("message").value;
+      if (msg) {
+        socket.emit("msg", {
+          message: msg,
+          user: user,
+          withEmoji: withEmoji,
+        });
       }
+      document.getElementById("message").value = "";
 
-      socket.on("newmsg", function (data) {
-        var isYou = user == data.user;
-        var colors = [
-          "#e84393",
-          "#55efc4",
-          "#ffeaa7",
-          "#b82e1f",
-          "#166d3b",
-          "#04619f",
-          "#923cb5",
-          "#ffa69e",
-          "#8b939a",
-          "#63d471",
-          "#e84393",
-          "#55efc4",
-          "#ffeaa7",
-          "#a2e342",
-          "#561a91",
-          "#425de3",
-          "#d042e3",
-          "#e02639",
-          "#5da122",
-          "#20e0e3",
-          "#db9e02",
-          "#9416c9",
-        ];
+      var messageContainer = document.getElementById("message-container");
+      messageContainer.scrollTop = messageContainer.scrollHeight;
+    }
 
-        // console.log(user, data.user.length);
+    socket.on("newmsg", function (data) {
+      var isYou = user == data.user;
+      var colors = [
+        "#e84393",
+        "#55efc4",
+        "#ffeaa7",
+        "#b82e1f",
+        "#166d3b",
+        "#04619f",
+        "#923cb5",
+        "#ffa69e",
+        "#8b939a",
+        "#63d471",
+        "#e84393",
+        "#55efc4",
+        "#ffeaa7",
+        "#a2e342",
+        "#561a91",
+        "#425de3",
+        "#d042e3",
+        "#e02639",
+        "#5da122",
+        "#20e0e3",
+        "#db9e02",
+        "#9416c9",
+      ];
 
-        // if (user) {
-        document.getElementById(
-          "message-container"
-        ).innerHTML += `<div class="chat" ${
-          isYou ? 'style="right: -25%; position: relative"' : ""
+      // console.log(user, data.user.length);
+
+      // if (user) {
+      document.getElementById(
+        "message-container"
+      ).innerHTML += `<div class="chat" ${isYou ? 'style="right: -25%; position: relative"' : ""
         } >
-            <p class="user" style='background: -webkit-linear-gradient(45deg, ${
-              isYou
-                ? "yellow"
-                : colors[data.user.length > 22 ? 10 : data.user.length]
-            }, #d8ef55);
+            <p class="user" style='background: -webkit-linear-gradient(45deg, ${isYou
+          ? "yellow"
+          : colors[data.user.length > 22 ? 10 : data.user.length]
+        }, #d8ef55);
              -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;'>${
-              isYou ? "You" : data.user
-            }</p>
-            <span class="${data.withEmoji ? "withEmoji" : "message"}">${
-          data.message
+            -webkit-text-fill-color: transparent;'>${isYou ? "You" : data.user
+        }</p>
+            <span class="${data.withEmoji ? "withEmoji" : "message"}">${data.message
         }</span>
           </div>`;
-        // }
-        // push notification
-        if (!isYou) notifyMe(data.user, data.message);
-        var messageContainer = document.getElementById("message-container");
-        messageContainer.scrollTop = messageContainer.scrollHeight;
-      });
+      // }
+      // push notification
+      if (!isYou) notifyMe(data.user, data.message);
+      var messageContainer = document.getElementById("message-container");
+      messageContainer.scrollTop = messageContainer.scrollHeight;
+    });
 
-      // NOTIFICATION
-      // request permission on page load
-      document.addEventListener("DOMContentLoaded", function () {
-        if (!Notification) {
-          alert(
-            "Desktop notifications not available in your browser. Try Chromium."
-          );
-          return;
-        }
-
-        if (Notification.permission !== "granted")
-          Notification.requestPermission();
-      });
-
-      function notifyMe(user, msg) {
-        if (Notification.permission !== "granted")
-          Notification.requestPermission();
-        else {
-          var notification = new Notification(user, {
-            icon: "https://ctl.s6img.com/society6/img/Ei71OMtRmxiZjW7FhkwrEjVxb6c/w_1500/prints/~artwork/s6-original-art-uploads/society6/uploads/misc/86556d05555644f8bbcf500d1f283474/~~/cool-chick533978-prints.jpg",
-            body: msg,
-          });
-          notification.onclick = function () {
-            window.open("https://deskbug.herokuapp.com");
-          };
-        }
+    // NOTIFICATION
+    // request permission on page load
+    document.addEventListener("DOMContentLoaded", function () {
+      if (!Notification) {
+        alert(
+          "Desktop notifications not available in your browser. Try Chromium."
+        );
+        return;
       }
-    </script>
-  </head>
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0px;
-      padding: 0px;
-      font-family: "inconsolata", monospace;
-    }
 
-    /* width */
-    ::-webkit-scrollbar {
-      width: 5px;
-    }
+      if (Notification.permission !== "granted")
+        Notification.requestPermission();
+    });
 
-    /* Track */
-    ::-webkit-scrollbar-track {
-      background: #ffffff05;
-    }
-
-    /* Handle */
-    ::-webkit-scrollbar-thumb {
-      background: #ffffff10;
-    }
-
-    /* Handle on hover */
-    ::-webkit-scrollbar-thumb:hover {
-      background: #ffffff15;
-    }
-
-    ::-webkit-input-placeholder {
-      /* Edge */
-      color: #7f8c8d;
-      font-size: 14px;
-    }
-
-    :-ms-input-placeholder {
-      /* Internet Explorer 10-11 */
-      color: #7f8c8d;
-      font-size: 14px;
-    }
-
-    ::placeholder {
-      color: #7f8c8d;
-      font-size: 14px;
-    }
-
-    body {
-      background-color: #000;
-      height: 100vh;
-    }
-
-    @keyframes gradient {
-      0% {
-        background-position: 0% 50%;
-      }
-      50% {
-        background-position: 100% 50%;
-      }
-      100% {
-        background-position: 0% 50%;
+    function notifyMe(user, msg) {
+      if (Notification.permission !== "granted")
+        Notification.requestPermission();
+      else {
+        var notification = new Notification(user, {
+          icon: "https://ctl.s6img.com/society6/img/Ei71OMtRmxiZjW7FhkwrEjVxb6c/w_1500/prints/~artwork/s6-original-art-uploads/society6/uploads/misc/86556d05555644f8bbcf500d1f283474/~~/cool-chick533978-prints.jpg",
+          body: msg,
+        });
+        notification.onclick = function () {
+          window.open("https://deskbug.herokuapp.com");
+        };
       }
     }
+  </script>
+</head>
+<style>
+  * {
+    box-sizing: border-box;
+    margin: 0px;
+    padding: 0px;
+    font-family: "inconsolata", monospace;
+  }
 
-    .bg {
-      background: linear-gradient(
-        -60deg,
+  /* width */
+  ::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #ffffff05;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #ffffff10;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #ffffff15;
+  }
+
+  ::-webkit-input-placeholder {
+    /* Edge */
+    color: #7f8c8d;
+    font-size: 14px;
+  }
+
+  :-ms-input-placeholder {
+    /* Internet Explorer 10-11 */
+    color: #7f8c8d;
+    font-size: 14px;
+  }
+
+  ::placeholder {
+    color: #7f8c8d;
+    font-size: 14px;
+  }
+
+  body {
+    background-color: #000;
+    height: 100vh;
+  }
+
+  @keyframes gradient {
+    0% {
+      background-position: 0% 50%;
+    }
+
+    50% {
+      background-position: 100% 50%;
+    }
+
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  .bg {
+    background: linear-gradient(-60deg,
         #ee775210,
         #23a6d516,
         #55efc401,
         #23d5ab05,
-        #923cb550
-      );
-      animation: gradient 20s ease infinite;
-      background-size: 400% 400%;
-      backdrop-filter: blur(500px);
-      background-blend-mode: multiply;
-      height: 100vh;
-    }
+        #923cb550);
+    animation: gradient 20s ease infinite;
+    background-size: 400% 400%;
+    backdrop-filter: blur(500px);
+    background-blend-mode: multiply;
+    height: 100vh;
+  }
 
-    .container {
-      height: 100vh;
-      border-radius: 20px;
-      width: 48%;
-      height: 100vh;
-      padding: 20px;
-      position: relative;
-    }
+  .container {
+    height: 100vh;
+    border-radius: 20px;
+    width: 48%;
+    height: 100vh;
+    padding: 20px;
+    position: relative;
+  }
 
-    p,
-    a {
-      font-family: "inconsolata", monospace;
-      font-weight: 100;
-      font-size: 80px;
-      background: -webkit-linear-gradient(45deg, #7f8c8d, #55efc4);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      opacity: 0.8;
-      word-wrap: break-word;
-    }
+  p,
+  a {
+    font-family: "inconsolata", monospace;
+    font-weight: 100;
+    font-size: 80px;
+    background: -webkit-linear-gradient(45deg, #7f8c8d, #55efc4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    opacity: 0.8;
+    word-wrap: break-word;
+  }
 
-    .message {
-      font-family: "inconsolata", monospace;
-      font-size: 20px;
-      font-weight: 800;
-      background: -webkit-linear-gradient(45deg, #7f8c8d, #55efc4);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      opacity: 0.8;
-      word-wrap: break-word;
-    }
-    .user {
-      font-family: "inconsolata", monospace;
-      font-weight: 100;
-      font-size: 40px;
-      background: -webkit-linear-gradient(45deg, #b82e1f, #55efc4);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      opacity: 0.6;
-      word-wrap: break-word;
-    }
+  .message {
+    font-family: "inconsolata", monospace;
+    font-size: 20px;
+    font-weight: 800;
+    background: -webkit-linear-gradient(45deg, #7f8c8d, #55efc4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    opacity: 0.8;
+    word-wrap: break-word;
+  }
 
-    .me {
-      background: -webkit-linear-gradient(45deg, #b81f9f, #d8ef55);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      word-wrap: break-word;
-    }
+  .user {
+    font-family: "inconsolata", monospace;
+    font-weight: 100;
+    font-size: 40px;
+    background: -webkit-linear-gradient(45deg, #b82e1f, #55efc4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    opacity: 0.6;
+    word-wrap: break-word;
+  }
 
-    .withEmoji {
-      font-family: "inconsolata", monospace;
-      font-weight: 100;
-      font-size: 40px;
-      opacity: 0.6;
-    }
+  .me {
+    background: -webkit-linear-gradient(45deg, #b81f9f, #d8ef55);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    word-wrap: break-word;
+  }
 
-    .chat {
-      background: #ffffff09;
-      border-radius: 7px;
-      margin: 10px;
-      padding: 20px;
-      width: 70%;
-      /* float: right; */
-    }
-    .chat > p {
-      font-size: 20px;
-      font-weight: 800;
-    }
-    .row {
-      flex-direction: row;
-      display: flex;
-      align-items: center;
-    }
-    .sub {
-      font-size: 30px;
-      font-weight: 400;
-    }
-    .timeBox {
-      /* border: 1px solid #ffffff20; */
-      margin: 15px;
-    }
+  .withEmoji {
+    font-family: "inconsolata", monospace;
+    font-weight: 100;
+    font-size: 40px;
+    opacity: 0.6;
+  }
 
-    /* INPUTS */
-    .inputs {
-      background-color: #ffffff09;
-      border-radius: 5px;
-      padding: 10px;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: auto auto;
-      grid-gap: 10px;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .grid-item {
-      justify-content: space-between;
-      align-items: center;
-    }
-    textarea {
-      background-color: #cccccc20;
-      border: 0px;
-      width: 100%;
-      min-height: 70px;
-      border-radius: 5px;
-      color: #7f8c8d;
-      padding: 10px;
-    }
+  .chat {
+    background: #ffffff09;
+    border-radius: 7px;
+    margin: 10px;
+    padding: 20px;
+    width: 70%;
+    /* float: right; */
+  }
 
-    button {
-      background: -webkit-linear-gradient(45deg, #166d3b, #55efc4);
-      border: 0px;
-      padding: 6px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 15px;
-      font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
-        sans-serif;
-    }
+  .chat>p {
+    font-size: 20px;
+    font-weight: 800;
+  }
 
-    button:hover,
-    a:hover {
-      opacity: 0.5;
-    }
+  .row {
+    flex-direction: row;
+    display: flex;
+    align-items: center;
+  }
 
-    input {
-      background-color: #ffffff10;
-      color: #7f8c8d;
-      font-size: 20px;
-      border: 0px;
-      padding: 5px;
-      border-radius: 5px;
-      flex: 1;
-      width: 70%;
-      margin: 5px;
-    }
+  .sub {
+    font-size: 30px;
+    font-weight: 400;
+  }
 
-    .masseges {
-      height: 87vh;
-      overflow-y: scroll;
-    }
+  .timeBox {
+    /* border: 1px solid #ffffff20; */
+    margin: 15px;
+  }
 
-    .chatbox {
-      position: absolute;
-      bottom: 0;
-      padding-bottom: 0px;
-      display: flex;
-      justify-content: space-between;
-      background-color: #ffffff30;
-      border-radius: 5px;
-      height: 10vh;
-      width: 92%;
-    }
-    .chatbox > input {
-      background-color: transparent;
-      color: #fff;
-      font-size: 20px;
-      border: 0px;
-      padding: 20px;
-    }
-    .chatbox > button {
-      background: -webkit-linear-gradient(45deg, #923cb5, #55efc4);
-      padding: 0px 30px 0px 30px;
-      font-weight: 800;
-      font-size: 20px;
-      color: rgb(17, 24, 26);
-    }
+  /* INPUTS */
+  .inputs {
+    background-color: #ffffff09;
+    border-radius: 5px;
+    padding: 10px;
+  }
 
-    .emojies {
-      max-width: 220px;
-      max-height: 80vh;
-      padding: 10px;
-      right: 0px;
-      position: fixed;
-      top: 0;
-      display: none;
-    }
-    .emojies > button {
-      font-size: 30px;
-      background: #ffffff10;
-      padding: 5px;
-      margin-right: 5px;
-      width: 60px;
-      height: 60px;
-    }
-    #toggleEmojies {
-      color: #923cb5;
-      background: none;
-      opacity: 0.7;
-    }
-    footer {
-      position: absolute;
-      bottom: 0;
-    }
+  .grid {
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-gap: 10px;
+    justify-content: space-between;
+    align-items: center;
+  }
 
-    .news {
-      background: #ffffff10;
-    }
-    .news_card {
-      border: 1px solid #ffffff20;
-      padding: 5px;
-      border-radius: 5px;
-      max-height: 40vh;
-      overflow-y: scroll;
-    }
+  .grid-item {
+    justify-content: space-between;
+    align-items: center;
+  }
 
-    .coverPicture {
-      flex: 0.4;
-      background-color: #ffffff20;
-      background-position: center;
-      background-size: cover;
-      background-repeat: no-repeat;
-      border-radius: 2.5px;
-    }
+  textarea {
+    background-color: #cccccc20;
+    border: 0px;
+    width: 100%;
+    min-height: 70px;
+    border-radius: 5px;
+    color: #7f8c8d;
+    padding: 10px;
+  }
 
-    #news_des {
-      font-size: 16px;
-      font-weight: 400;
-      margin-top: 10px;
-      font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
-        sans-serif;
-    }
-    #news_head {
-      font-size: 20px;
-      flex: 0.5;
-      font-weight: 400;
-      font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
-        sans-serif;
-    }
-  </style>
-  <body>
-    <main
-      class="bg"
-      style="flex-direction: row; display: flex; justify-content: space-between"
-    >
-      <div class="container">
-        <div class="inputs">
-          <div>
-            <textarea
-              id="textArea"
-              oninput="this.style.height = this.scrollHeight+'px'"
-              placeholder="Copy here pmt check in ckout times &#10;1	Entrance	Check-In	2021-12-21 09:19:05.000000 &#10;2	Entrance	Check-Out	2021-12-21 10:50:05.000000 &#10;-	   -           	--       	--- ---.--"
-            ></textarea>
-          </div>
-          <div class="grid">
-            <div class="grid-item">
-              <div>
-                <button
-                  style="padding-left: 40px; padding-right: 40px"
-                  onclick="genPmtTimes()"
-                >
-                  Add time
-                </button>
-              </div>
+  button {
+    background: -webkit-linear-gradient(45deg, #166d3b, #55efc4);
+    border: 0px;
+    padding: 6px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 15px;
+    font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
+      sans-serif;
+  }
+
+  button:hover,
+  a:hover {
+    opacity: 0.5;
+  }
+
+  input {
+    background-color: #ffffff10;
+    color: #7f8c8d;
+    font-size: 20px;
+    border: 0px;
+    padding: 5px;
+    border-radius: 5px;
+    flex: 1;
+    width: 70%;
+    margin: 5px;
+  }
+
+  .masseges {
+    height: 87vh;
+    overflow-y: scroll;
+  }
+
+  .chatbox {
+    position: absolute;
+    bottom: 0;
+    padding-bottom: 0px;
+    display: flex;
+    justify-content: space-between;
+    background-color: #ffffff30;
+    border-radius: 5px;
+    height: 10vh;
+    width: 92%;
+  }
+
+  .chatbox>input {
+    background-color: transparent;
+    color: #fff;
+    font-size: 20px;
+    border: 0px;
+    padding: 20px;
+  }
+
+  .chatbox>button {
+    background: -webkit-linear-gradient(45deg, #923cb5, #55efc4);
+    padding: 0px 30px 0px 30px;
+    font-weight: 800;
+    font-size: 20px;
+    color: rgb(17, 24, 26);
+  }
+
+  .emojies {
+    max-width: 220px;
+    max-height: 80vh;
+    padding: 10px;
+    right: 0px;
+    position: fixed;
+    top: 0;
+    display: none;
+  }
+
+  .emojies>button {
+    font-size: 30px;
+    background: #ffffff10;
+    padding: 5px;
+    margin-right: 5px;
+    width: 60px;
+    height: 60px;
+  }
+
+  #toggleEmojies {
+    color: #923cb5;
+    background: none;
+    opacity: 0.7;
+  }
+
+  footer {
+    position: absolute;
+    bottom: 0;
+  }
+
+  .news {
+    background: #ffffff10;
+  }
+
+  .news_card {
+    border: 1px solid #ffffff20;
+    padding: 5px;
+    border-radius: 5px;
+    max-height: 40vh;
+    overflow-y: scroll;
+  }
+
+  .coverPicture {
+    flex: 0.4;
+    background-color: #ffffff20;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    border-radius: 2.5px;
+  }
+
+  #news_des {
+    font-size: 16px;
+    font-weight: 400;
+    margin-top: 10px;
+    font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
+      sans-serif;
+  }
+
+  #news_head {
+    font-size: 20px;
+    flex: 0.5;
+    font-weight: 400;
+    font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
+      sans-serif;
+  }
+</style>
+
+<body>
+  <main class="bg" style="flex-direction: row; display: flex; justify-content: space-between">
+    <div class="container">
+      <div class="inputs">
+        <div>
+          <textarea id="textArea" oninput="this.style.height = this.scrollHeight+'px'"
+            placeholder="Copy here pmt check in ckout times &#10;1	Entrance	Check-In	2021-12-21 09:19:05.000000 &#10;2	Entrance	Check-Out	2021-12-21 10:50:05.000000 &#10;-	   -           	--       	--- ---.--"></textarea>
+        </div>
+        <div class="grid">
+          <div class="grid-item">
+            <div>
+              <button style="padding-left: 40px; padding-right: 40px" onclick="genPmtTimes()">
+                Add time
+              </button>
             </div>
-            <div class="grid-item">
-              <div>
-                <input
-                  id="totalTimeInput"
-                  placeholder="or - 00:00:00 (working hrs)"
-                />
-                <button onclick="setTotalTimeOpt2()">Add time</button>
-              </div>
+          </div>
+          <div class="grid-item">
+            <div>
+              <input id="totalTimeInput" placeholder="or - 00:00:00 (working hrs)" />
+              <button onclick="setTotalTimeOpt2()">Add time</button>
             </div>
           </div>
         </div>
+      </div>
 
-        <div class="timer" id="divTimes" style="max-height: 35vh">
-          <div class="row">
-            <div>
-              <div class="timeBox">
-                <p class="sub title" style="font-size: 20px">Total Hrs:</p>
-                <p class="title" id="time" style="font-size: 35px">SET</p>
-              </div>
-              <div class="timeBox">
-                <p class="sub title" style="font-size: 20px">Remaining Hrs:</p>
-                <p
-                  class="title"
-                  id="time_remaining"
-                  style="
+      <div class="timer" id="divTimes" style="max-height: 35vh">
+        <div class="row">
+          <div>
+            <div class="timeBox">
+              <p class="sub title" style="font-size: 20px">Total Hrs:</p>
+              <p class="title" id="time" style="font-size: 35px">SET</p>
+            </div>
+            <div class="timeBox">
+              <p class="sub title" style="font-size: 20px">Remaining Hrs:</p>
+              <p class="title" id="time_remaining" style="
                     background: -webkit-linear-gradient(
                       45deg,
                       #d1331e,
@@ -517,219 +513,186 @@
                     -webkit-background-clip: text;
                     -webkit-text-fill-color: transparent;
                     font-size: 55px;
-                  "
-                >
-                  TIMES
-                </p>
-              </div>
+                  ">
+                TIMES
+              </p>
             </div>
-            <div>
-              <div class="timeBox">
-                <p class="sub title" style="font-size: 20px">Arrival:</p>
-                <p
-                  class="title"
-                  id="time_arrival"
-                  style="
+          </div>
+          <div>
+            <div class="timeBox">
+              <p class="sub title" style="font-size: 20px">Arrival:</p>
+              <p class="title" id="time_arrival" style="
                    
                     font-size: 35px;
-                  "
-                >
-                  00.00
-                </p>
-              </div>
-              <div class="timeBox">
-                <p class="sub title">Exit:</p>
-                <p
-                  class="title"
-                  id="time_out"
-                  style="
+                  ">
+                00.00
+              </p>
+            </div>
+            <div class="timeBox">
+              <p class="sub title">Exit:</p>
+              <p class="title" id="time_out" style="
                     background: -webkit-linear-gradient(45deg, #48d11e, #55efc4);
                     -webkit-background-clip: text;
                     -webkit-text-fill-color: transparent;
-                  "
-                >
-                  00.00
-                </p>
-              </div>
+                  ">
+                00.00
+              </p>
             </div>
-       
           </div>
-        </div>
 
-        
-        <div class="news">
-          <div class="news_card">
-            <div
-              style="
+        </div>
+      </div>
+
+
+      <div class="news">
+        <div class="news_card">
+          <div style="
                 flex-direction: row;
                 justify-content: space-between;
                 display: flex;
-              "
-            >
-              <div class="coverPicture" id="news_pic"></div>
-              <p id="news_head" >News Head</p>
-              <a
-                onclick="getNews()"
-                style="
+              ">
+            <div class="coverPicture" id="news_pic"></div>
+            <p id="news_head">News Head</p>
+            <a onclick="getNews()" style="
                   font-size: 35px;
                   margin: 10px;
                   font-weight: 600;
                   opacity: 0.3;
                   cursor: pointer;
-                "
-                >X</a
-              >
-            </div>
-
-            <p id="news_des" style="">Read news here</p>
-            <a
-              id="news_link"
-              target="_blank"
-              href="#"
-              onclick="window.open(this.href, 'mywin',
-'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
-              style="font-size: 25px; font-weight: 600"
-              >Read More...</a
-            >
+                ">X</a>
           </div>
+
+          <p id="news_des" style="">Read news here</p>
+          <a id="news_link" target="_blank" href="#" onclick="window.open(this.href, 'mywin',
+'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
+            style="font-size: 25px; font-weight: 600">Read More...</a>
         </div>
-        <footer>
-          <a
-            style="font-size: 15px; font-weight: 800"
-            target="_blank"
-            href="https://github.com/amir-abbasy/AMT-Timer"
-            >GitCode https://github.com/deskbug...</a
-          >
-          <p
-            style="
+      </div>
+      <footer>
+        <a style="font-size: 15px; font-weight: 800" target="_blank"
+          href="https://github.com/amir-abbasy/AMT-Timer">GitCode https://github.com/deskbug...</a>
+        <p style="
               font-size: 15px;
               font-weight: 400;
               margin: 5px;
               margin-left: 0px;
-            "
-          >
-            This project follows the all-contributors specification.
-            Contributions of any kind welcome!
-          </p>
-        </footer>
-      </div>
-
-      <div class="container">
-        <div class="masseges" id="message-container">
-          <div id="error-container" style="color: tomato"></div>
-        </div>
-
-        <div class="chatbox" id="chatbox">
-          <input
-            id="message"
-            type="text"
-            name="name"
-            value=""
-            placeholder="Enter your name!"
-          />
-          <button id="toggleEmojies" onclick="toggleEmojiContainer()">
-            😃
-          </button>
-          <button id="sendButton" onclick="setUsername()" class="button">
-            START CHATING!
-          </button>
-          <!-- <button  type="button"  name="button" onclick="sendMessage()" class="button">SEND</button> -->
-        </div>
-      </div>
-    </main>
-
-    <div class="emojies" id="emojies" style="overflow-y: scroll;">
-      <!-- EMOJIES LOOP -->
+            ">
+          This project follows the all-contributors specification.
+          Contributions of any kind welcome!
+        </p>
+      </footer>
     </div>
-    <script>
-      //  EMOJIES
-      function addEmoji(val) {
-        // console.log("#", val);
-        document.getElementById("message").value += val;
-        sendMessage(true);
+
+    <div class="container">
+      <div class="masseges" id="message-container">
+        <div id="error-container" style="color: tomato"></div>
+      </div>
+
+      <div class="chatbox" id="chatbox">
+        <input id="message" type="text" name="name" value="" placeholder="Enter your name!" />
+        <button id="toggleEmojies" onclick="toggleEmojiContainer()">
+          😃
+        </button>
+        <button id="sendButton" onclick="setUsername()" class="button">
+          START CHATING!
+        </button>
+        <!-- <button  type="button"  name="button" onclick="sendMessage()" class="button">SEND</button> -->
+      </div>
+    </div>
+  </main>
+
+  <div class="emojies" id="emojies" style="overflow-y: scroll;">
+    <!-- EMOJIES LOOP -->
+  </div>
+  <script>
+    //  EMOJIES
+    function addEmoji(val) {
+      // console.log("#", val);
+      document.getElementById("message").value += val;
+      sendMessage(true);
+    }
+
+    var emojies = document.getElementById("emojies");
+    const EmojiUnicodes = [
+      "🏀",
+      "🍊",
+      "🥦",
+      "🧄",
+      "🍭",
+      "😋",
+      "😛",
+      "😜",
+      "🙄",
+      "😎",
+      "💖",
+      "💣",
+      "👋",
+      "🖖",
+      "✌",
+      "👊",
+      "🙏",
+      "🧑",
+      "👧",
+      "🦊",
+      "🐶",
+      "🐮",
+      "🐓",
+      "🌹",
+    ];
+    EmojiUnicodes.forEach((element) => {
+      emojies.insertAdjacentHTML(
+        "beforeend",
+        `<button value="${element}" onclick="addEmoji(this.value)">${element}</button>`
+      );
+    });
+
+    function toggleEmojiContainer() {
+      const emojesBtn = document.getElementById("toggleEmojies");
+      if (emojies.style.display !== "none") {
+        emojies.style.display = "none";
+      } else {
+        emojies.style.display = "block";
       }
+    }
 
-      var emojies = document.getElementById("emojies");
-      const EmojiUnicodes = [
-        "🏀",
-        "🍊",
-        "🥦",
-        "🧄",
-        "🍭",
-        "😋",
-        "😛",
-        "😜",
-        "🙄",
-        "😎",
-        "💖",
-        "💣",
-        "👋",
-        "🖖",
-        "✌",
-        "👊",
-        "🙏",
-        "🧑",
-        "👧",
-        "🦊",
-        "🐶",
-        "🐮",
-        "🐓",
-        "🌹",
-      ];
-      EmojiUnicodes.forEach((element) => {
-        emojies.insertAdjacentHTML(
-          "beforeend",
-          `<button value="${element}" onclick="addEmoji(this.value)">${element}</button>`
-        );
-      });
+    // Execute a function when the user releases a key on the keyboard
+    var input = document.getElementById("message");
+    //  input = document.getElementById("message");
+    input.focus();
 
-      function toggleEmojiContainer() {
-        const emojesBtn = document.getElementById("toggleEmojies");
-        if (emojies.style.display !== "none") {
-          emojies.style.display = "none";
-        } else {
-          emojies.style.display = "block";
-        }
+    input.addEventListener("keyup", function (event) {
+      // Number 13 is the "Enter" key on the keyboard
+      if (event.keyCode === 13) {
+        // Cancel the default action, if needed
+        event.preventDefault();
+        // Trigger the button element with a click
+        sendMessage();
       }
+    });
 
-      // Execute a function when the user releases a key on the keyboard
-      var input = document.getElementById("message");
-      //  input = document.getElementById("message");
-      input.focus();
+    // AMT TIMING
+    var textArea = document.getElementById("textArea");
+    var times_ = [];
+    var totalTimeOpt2 = null;
 
-      input.addEventListener("keyup", function (event) {
-        // Number 13 is the "Enter" key on the keyboard
-        if (event.keyCode === 13) {
-          // Cancel the default action, if needed
-          event.preventDefault();
-          // Trigger the button element with a click
-          sendMessage();
-        }
-      });
+    // var times_ = [
+    //   ["09:24:32", "10:59:26"],
+    //   ["11:13:45", "12:00:00"],
+    // ];
 
-      // AMT TIMING
-      var textArea = document.getElementById("textArea");
-      var times_ = [];
-      var totalTimeOpt2 = null;
+    function genPmtTimes() {
+      totalTimeOpt2 = null;
+      times_ = pmtTimeGen(textArea.value);
+    }
+    function setTotalTimeOpt2() {
+      totalTimeOpt2 = document.getElementById("totalTimeInput").value;
+      times_ = [];
+    }
 
-      // var times_ = [
-      //   ["09:24:32", "10:59:26"],
-      //   ["11:13:45", "12:00:00"],
-      // ];
 
-      function genPmtTimes() {
-        totalTimeOpt2 = null;
-        times_ = pmtTimeGen(textArea.value);
-      }
-      function setTotalTimeOpt2() {
-        times_ = [];
-        totalTimeOpt2 = document.getElementById("totalTimeInput").value;
-      }
-
-     
 
     setInterval(function () {
-      var millisecond; 
+      var millisecond;
       if (times_.length != 0) {
         var times = [
           ...times_,
@@ -738,26 +701,27 @@
             new Date().toLocaleTimeString("en-GB"),
           ],
         ];
-        millisecond =  calculateTimeInMillisecond(times);
-      }else{
-        millisecond =   calculateHourInMillisecond(totalTimeOpt2);
+        millisecond = calculateTimeInMillisecond(times);
+      } else {
+        millisecond = calculateHourInMillisecond(totalTimeOpt2);
       }
-        // var millisecond = calculateTimeInMillisecond(times_);
+      // var millisecond = calculateTimeInMillisecond(times_);
+      // console.log("times_", times);
 
-        document.getElementById('time').innerHTML = calculateTime(millisecond[0]);
+      document.getElementById('time').innerHTML = calculateTime(millisecond[0]);
 
-        // 28800000 = 8 hours
-        // 14400000 = 4 hours
-        var remaining = document.getElementById('time_remaining').innerHTML = calculateTime((28800000 - millisecond[0]));
+      // 28800000 = 8 hours
+      // 14400000 = 4 hours
+      var remaining = document.getElementById('time_remaining').innerHTML = calculateTime((28800000 - millisecond[0]));
 
-        document.getElementById('time_arrival').innerHTML = millisecond[1].slice(0, 8);
+      document.getElementById('time_arrival').innerHTML = millisecond[1].slice(0, 8);
 
-        if (remaining != '00:00:00') {
-          document.getElementById('time_out').innerHTML = tConvert(calculateTimeFinal(new Date().toLocaleTimeString(), remaining));
-        } else {
-          document.getElementById("time_out").innerHTML = "| RUN |";
-          document.getElementById("time_remaining").innerHTML = "00:00:00";
-        }
+      if (remaining != '00:00:00') {
+        document.getElementById('time_out').innerHTML = tConvert(calculateTimeFinal(new Date().toLocaleTimeString(), remaining));
+      } else {
+        document.getElementById("time_out").innerHTML = "| RUN |";
+        document.getElementById("time_remaining").innerHTML = "00:00:00";
+      }
     }, 1000);
 
 
@@ -804,17 +768,17 @@
       });
 
 
-      return [millisecond_diff,arrival];
+      return [millisecond_diff, arrival];
     }
 
-    function calculateHourInMillisecond(totalHour){
+    function calculateHourInMillisecond(totalHour) {
       var houres = totalHour;
       var totalHour = houres.split(':');
       var total_milliSec = (parseInt(totalHour[0]) * 60 * 60 + parseInt(totalHour[1]) * 60 + parseInt(totalHour[2])) * 1000;
-      console.log('total_milliSec', total_milliSec);
+      // console.log('total_milliSec', total_milliSec);
       return [total_milliSec, undefined];
     }
-   
+
 
     function calculateTime(millisecond) {
       return ('0' + (parseInt((millisecond / (1000 * 60 * 60)) % 24))).slice(-2) + ':' + ('0' + (parseInt((millisecond / (1000 * 60)) % 60))).slice(-2) + ':' + ('0' + (parseInt((millisecond / 1000) % 60))).slice(-2);
@@ -835,7 +799,7 @@
     }
 
 
-     // Return pmt times
+    // Return pmt times
     function pmtTimeGen(times) {
       var timeArray = [];
       var didPass13 = false;
@@ -860,6 +824,7 @@
           item2 = arr[key + 1].split("\t");
           t2 = item2[item2.length - 1].split(" ");
         }
+
 
         if (item[2] == "Check-In") {
 
@@ -891,39 +856,40 @@
       return timeArray;
     }
 
-      // News
-      var news = null;
-      var news_index = 0;
-      const getNews = async () => {
-        function setNewsContents(news_index) {
-          document.getElementById("news_des").innerHTML =
-            news[news_index].description;
-          document.getElementById("news_head").innerHTML =
-            news[news_index].title;
-          document.getElementById("news_link").href =
-            news[news_index].url;
-          document.getElementById("news_pic").style =
-            "background-image: url(" + news[news_index].urlToImage + ");";
-        }
-        if (news == null) {
-          try {
-           const BASE_URL = "https://deskbug.herokuapp.com/news";
-            const response = await axios.get(`${BASE_URL}`);
-            news = response.data.articles;
-            setNewsContents(news_index);
-            // console.log(`GET: -----------------------news`, news);
-            // return news.data;
-          } catch (errors) {
-            console.error(errors);
-          }
-        } else {
+    // News
+    var news = null;
+    var news_index = 0;
+    const getNews = async () => {
+      function setNewsContents(news_index) {
+        document.getElementById("news_des").innerHTML =
+          news[news_index].description;
+        document.getElementById("news_head").innerHTML =
+          news[news_index].title;
+        document.getElementById("news_link").href =
+          news[news_index].url;
+        document.getElementById("news_pic").style =
+          "background-image: url(" + news[news_index].urlToImage + ");";
+      }
+      if (news == null) {
+        try {
+          const BASE_URL = "https://deskbug.herokuapp.com/news";
+          const response = await axios.get(`${BASE_URL}`);
+          news = response.data.articles;
           setNewsContents(news_index);
-          news_index += 1;
+          // console.log(`GET: -----------------------news`, news);
+          // return news.data;
+        } catch (errors) {
+          console.error(errors);
         }
-      };
+      } else {
+        setNewsContents(news_index);
+        news_index += 1;
+      }
+    };
 
-      getNews();
+    getNews();
 
-    </script>
-  </body>
+  </script>
+</body>
+
 </html>
