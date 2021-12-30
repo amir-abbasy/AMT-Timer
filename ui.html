@@ -835,62 +835,61 @@
     }
 
 
-      // Return pmt times
-      function pmtTimeGen(times) {
-        var timeArray = [];
+     // Return pmt times
+    function pmtTimeGen(times) {
+      var timeArray = [];
+      var didPass13 = false;
 
-        times.replace(/^\s+|\s+$/g, "");
+      times.replace(/^\s+|\s+$/g, "");
 
-        let arr = times.split("\n");
+      let arr = times.split("\n");
 
-        arr.map((item, key) => {
-          //   chckIn
-          let time = [];
-          item = item.split("\t");
-          // console.log(item)
-          let t = item[item.length - 1].split(" ");
-          //  console.log(item[2], t[1])
+      arr.map((item, key) => {
+        //   chckIn
+        let time = [];
+        item = item.split("\t");
+        // console.log(item)
+        let t = item[item.length - 1].split(" ");
+        //  console.log(item[2], t[1])
 
-          // chckOut
+        // chckOut
 
-          var item2 = [];
-          let t2 = ["^", new Date().toLocaleTimeString("en-GB")];
-          if (arr[key + 1]) {
-            item2 = arr[key + 1].split("\t");
-            t2 = item2[item2.length - 1].split(" ");
+        var item2 = [];
+        let t2 = ["^", new Date().toLocaleTimeString("en-GB")];
+        if (arr[key + 1]) {
+          item2 = arr[key + 1].split("\t");
+          t2 = item2[item2.length - 1].split(" ");
+        }
+
+        if (item[2] == "Check-In") {
+
+          var tarr = t[1].split(':');
+          var tm = `${tarr[0]},${tarr[1]},${tarr[2]}`;
+          var tarr2 = t2[1].split(':');
+          var tm2 = `${tarr2[0]},${tarr2[1]},${tarr2[2]}`;
+
+
+          time[0] = t[1];
+          time[1] = t2[1];
+
+          // console.log("#", tm, tm2);
+          if (tm2 >= '13,00,00' && didPass13 == false) {
+            didPass13 = true;
+            time[1] = '13:00:00';
+          } else if (tm >= '13,00,00' && tm <= '13,45,00') {
+            time[0] = '13:45:00';
           }
+        } else {
+          //  nothing for check-out data
+        }
+        if (time.length != 0) {
+          timeArray.push(time);
+        }
+        time = [];
+      });
 
-          // console.log("#", t2)
-
-          if (item[2] == "Check-In") {
-            // time[0] = t[1];
-
-            if (parseInt(t[1]) == 13) {
-              time[0] = "13:45:00";
-            } else {
-              time[0] = t[1];
-            }
-
-            if (parseInt(t2[1]) == 13) {
-              time[1] = "13:00:00";
-            } else {
-              time[1] = t2[1];
-            }
-          } else {
-            //  time[1] = t[1];
-            //  time[0] = t2[1]
-          }
-
-          //  console.log(time)
-
-          if (time.length != 0) {
-            timeArray.push(time);
-          }
-          time = [];
-        });
-
-        return timeArray;
-      }
+      return timeArray;
+    }
 
       // News
       var news = null;
