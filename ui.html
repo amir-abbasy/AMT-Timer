@@ -544,30 +544,7 @@
       </div>
 
 
-      <div class="news">
-        <div class="news_card">
-          <div style="
-                flex-direction: row;
-                justify-content: space-between;
-                display: flex;
-              ">
-            <div class="coverPicture" id="news_pic"></div>
-            <p id="news_head">News Head</p>
-            <a onclick="getNews()" style="
-                  font-size: 35px;
-                  margin: 10px;
-                  font-weight: 600;
-                  opacity: 0.3;
-                  cursor: pointer;
-                ">X</a>
-          </div>
-
-          <p id="news_des" style="">Read news here</p>
-          <a id="news_link" target="_blank" href="#" onclick="window.open(this.href, 'mywin',
-'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
-            style="font-size: 25px; font-weight: 600">Read More...</a>
-        </div>
-      </div>
+    
       <footer>
         <a style="font-size: 15px; font-weight: 800" target="_blank"
           href="https://github.com/amir-abbasy/AMT-Timer">GitCode https://github.com/deskbug...</a>
@@ -674,6 +651,7 @@
     var textArea = document.getElementById("textArea");
     var times_ = [];
     var totalTimeOpt2 = null;
+    var totalTimeDiff = 1000;
 
     // var times_ = [
     //   ["09:24:32", "10:59:26"],
@@ -702,6 +680,7 @@
           ],
         ];
         millisecond = calculateTimeInMillisecond(times);
+        document.getElementById('time_arrival').innerHTML = millisecond[1].slice(0, 8);
       } else {
         millisecond = calculateHourInMillisecond(totalTimeOpt2);
       }
@@ -709,18 +688,14 @@
       // console.log("times_", times);
 
       document.getElementById('time').innerHTML = calculateTime(millisecond[0]);
-
       // 28800000 = 8 hours
       // 14400000 = 4 hours
       var remaining = document.getElementById('time_remaining').innerHTML = calculateTime((28800000 - millisecond[0]));
+      document.getElementById('time_out').innerHTML = tConvert(calculateTimeFinal(new Date().toLocaleTimeString(), remaining));
 
-      document.getElementById('time_arrival').innerHTML = millisecond[1].slice(0, 8);
-
-      if (remaining != '00:00:00') {
-        document.getElementById('time_out').innerHTML = tConvert(calculateTimeFinal(new Date().toLocaleTimeString(), remaining));
-      } else {
+      if (calculateTime(millisecond[0]) > '08:00:00') {
         document.getElementById("time_out").innerHTML = "| RUN |";
-        document.getElementById("time_remaining").innerHTML = "00:00:00";
+        document.getElementById('time_remaining').innerHTML = '00:00'
       }
     }, 1000);
 
@@ -775,8 +750,9 @@
       var houres = totalHour;
       var totalHour = houres.split(':');
       var total_milliSec = (parseInt(totalHour[0]) * 60 * 60 + parseInt(totalHour[1]) * 60 + parseInt(totalHour[2])) * 1000;
-      // console.log('total_milliSec', total_milliSec);
-      return [total_milliSec, undefined];
+      console.log('total_milliSec', total_milliSec);
+      totalTimeDiff+=1000;
+      return [total_milliSec+totalTimeDiff, undefined];
     }
 
 
